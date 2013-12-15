@@ -17,13 +17,13 @@ float[] tabSin = new float[NB_POINTS];
 void setup ()
 {
   Interactive.make(this);  
-    size(400, 400);
-    
-    for (int i = 0; i < NB_POINTS; i++) {
-      tabCos[i] = cos(map(i, 0, NB_POINTS, -PI/2, PI/2));
-      tabSin[i] = sin(map(i, 0, NB_POINTS, -PI/2, PI/2)); 
-    }
-    initGui();
+  size(400, 400, P2D);
+  
+  for (int i = 0; i < NB_POINTS; i++) {
+    tabCos[i] = cos(map(i, 0, NB_POINTS, -PI/2, PI/2));
+    tabSin[i] = sin(map(i, 0, NB_POINTS, -PI/2, PI/2)); 
+  }
+  initGui();
 }
 
 void initGui() {

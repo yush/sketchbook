@@ -40,6 +40,7 @@ public class SuText extends SuBase {
 public class SuSlider
 {
     final float nullValue = -9999;
+    final int zOrder = 6;
     float x, y, width, height;
     float valueX = 0, value;
     float rangeL, rangeH;
@@ -92,10 +93,10 @@ public class SuSlider
       rect(x, y, width, height);        
       fill(255);
       if (caption != "") {
-        text(caption, x+width-textWidth(caption)-10, y+height-2);
+        text(caption, x+width-textWidth(caption)-10, y+height-2, zOrder);
       } 
-      text(value,width+12,y+height-2);        
-      fill( 120 );
+      text(value,width+12,y+height-2, zOrder);        
+      fill(120);
       rect(valueX, y, height, height );
     }
 }
