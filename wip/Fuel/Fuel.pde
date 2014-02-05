@@ -17,7 +17,7 @@ float[] tabSin = new float[NB_POINTS];
 void setup ()
 {
   Interactive.make(this);  
-  size(400, 400, P2D);
+  size(400, 400, P3D);
   
   for (int i = 0; i < NB_POINTS; i++) {
     tabCos[i] = cos(map(i, 0, NB_POINTS, -PI/2, PI/2));
@@ -49,8 +49,10 @@ void initGui() {
 
 void draw ()
 {
+  pushMatrix();    
   translate(width/2, height/2);
   rotate(PI);
+  rotateX(mouseY*0.01);
   background( 0 );   
   stroke(255); 
   levelBefore = round(slLevelBefore.value);
@@ -58,10 +60,9 @@ void draw ()
   R = round(slRayon.value);
   stNiveau.value = calculeNiveau(R, levelBefore);
   stSurface.value = calculeAireDisqueOuvert(R, levelBefore);
-  segmentCirculaire(R, levelBefore, color(0,0,255));
-  segmentCirculaire(R, levelAfter, color(0,255,0));
-  rotate(PI);  
-  translate(-width/2, -height/2);
+  segmentCirculaire(R, 0, levelBefore, color(0,0,255));
+  segmentCirculaire(R, levelBefore, levelAfter, color(0,255,0));
+  popMatrix();
 }
 
 float calculeNiveau(float radius, int degre) {
@@ -84,20 +85,23 @@ float calculeAireDisqueOuvert(float radius, int degre) {
   return C-S; 
 }
 
-void segmentCirculaire(float radius, int degre, color c) {
-  int i;
+void segmentCirculaire(float radius, int initH, int degre, color c) {
+  int i, last;
   fill(c);
   beginShape();
-  for (i = 0; (i < NB_POINTS-1) && (i < degre); i++) {
+  vertex(0, tabSin[initH]*radius);
+  for (i = initH; (i < NB_POINTS-1) && (i < degre); i++) {
     vertex(tabCos[i]*radius,tabSin[i]*radius);
   }
-  vertex(0, tabSin[i]*radius);
+  last = max(0, i-1);
+  vertex(0, tabSin[last]*radius);
   endShape();
   
   beginShape();
-  for (i = 0; (i < NB_POINTS-1) && (i < degre); i++) {
+  vertex(0, tabSin[initH]*radius);
+  for (i = initH; (i < NB_POINTS-1) && (i < degre); i++) {
     vertex(-tabCos[i]*radius,tabSin[i]*radius);
   }
-  vertex(0, tabSin[i]*radius);
+  vertex(0, tabSin[last]*radius);
   endShape(); 
 }
