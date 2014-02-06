@@ -9,8 +9,10 @@ final float R_MAX = 100;
 SuSlider slLevelBefore;
 SuSlider slLevelAfter;
 SuSlider slRayon;
+SuSlider slLg;
 SuText stSurface;
 SuText stNiveau;
+SuText stLg;
 float[] tabCos = new float[NB_POINTS];
 float[] tabSin = new float[NB_POINTS];
 SegCirc s1, s2;
@@ -18,22 +20,17 @@ SegCirc s1, s2;
 void setup ()
 {
   Interactive.make(this);  
-  size(400, 400, P3D);
-  frameRate(24);
-  
-  for (int i = 0; i < NB_POINTS; i++) {
-    tabCos[i] = cos(map(i, 0, NB_POINTS, -PI/2, PI/2));
-    tabSin[i] = sin(map(i, 0, NB_POINTS, -PI/2, PI/2)); 
-  }
+  size(500, 500, OPENGL);
+  frameRate(15);
   initGui();
+  stroke(200);
   s1 = new SegCirc();
   s1.c = color(0,200,0);
   s2 = new SegCirc();
   s2.c = color(0,0,200);
 }
 
-void initGui() {
-     
+void initGui() {     
   slLevelBefore = new SuSlider(2, 2, width/2, 16);
   slLevelBefore.setCaption("niveau initial");
   slLevelBefore.setRange(0, 180);
@@ -46,11 +43,18 @@ void initGui() {
 
   slRayon = new SuSlider(2, 40, width/2, 16).setCaption("rayon")
                                               .setRange(50, R_MAX);                                      
-  slRayon.value = 100;
-  stNiveau = new SuText(2, 60);
-  stNiveau.setCaption("hauteur");
+  slLg = new SuSlider(2, 60, width/2, 16).setCaption("longeur")
+                                              .setRange(200, R_MAX);                                      
+
   stSurface = new SuText(2, 80);
   stSurface.setCaption("surface");
+  slRayon.value = 100;
+  stNiveau = new SuText(2, 80);
+  stNiveau.setCaption("hauteur");
+  stSurface = new SuText(2, 100);
+  stSurface.setCaption("surface");
+  stLg = new SuText(2, 60);
+  stLg.setCaption("longueur");
 }
 
 void draw ()
@@ -59,8 +63,8 @@ void draw ()
   translate(width/2, height/2);
   rotate(PI);
   rotateX(mouseY*0.01);
-  background( 0 );   
-  stroke(255); 
+  rotateY(mouseX*0.01);
+  background(100);   
   levelBefore = round(slLevelBefore.value);
   levelAfter = round(slLevelAfter.value);
   R = round(slRayon.value);
@@ -68,8 +72,8 @@ void draw ()
   stSurface.value = calculeAireDisqueOuvert(R, levelBefore);
   s1.processShape(R, 0, levelBefore);
   s2.processShape(R, levelBefore, levelAfter);
-  s1.draw();  
-  s2.draw();
+  s1.draw3d();
+  s2.draw3d();
   popMatrix();
 }
 
