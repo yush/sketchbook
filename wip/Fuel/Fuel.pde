@@ -13,17 +13,23 @@ SuText stSurface;
 SuText stNiveau;
 float[] tabCos = new float[NB_POINTS];
 float[] tabSin = new float[NB_POINTS];
+SegCirc s1, s2;
 
 void setup ()
 {
   Interactive.make(this);  
   size(400, 400, P3D);
+  frameRate(24);
   
   for (int i = 0; i < NB_POINTS; i++) {
     tabCos[i] = cos(map(i, 0, NB_POINTS, -PI/2, PI/2));
     tabSin[i] = sin(map(i, 0, NB_POINTS, -PI/2, PI/2)); 
   }
   initGui();
+  s1 = new SegCirc();
+  s1.c = color(0,200,0);
+  s2 = new SegCirc();
+  s2.c = color(0,0,200);
 }
 
 void initGui() {
@@ -60,8 +66,10 @@ void draw ()
   R = round(slRayon.value);
   stNiveau.value = calculeNiveau(R, levelBefore);
   stSurface.value = calculeAireDisqueOuvert(R, levelBefore);
-  segmentCirculaire(R, 0, levelBefore, color(0,0,255));
-  segmentCirculaire(R, levelBefore, levelAfter, color(0,255,0));
+  s1.processShape(R, 0, levelBefore);
+  s2.processShape(R, levelBefore, levelAfter);
+  s1.draw();  
+  s2.draw();
   popMatrix();
 }
 
@@ -83,25 +91,4 @@ float calculeAireDisqueOuvert(float radius, int degre) {
   S = calculeAireSegmentCirculaire(radius, degre);
   C = PI*radius*radius;
   return C-S; 
-}
-
-void segmentCirculaire(float radius, int initH, int degre, color c) {
-  int i, last;
-  fill(c);
-  beginShape();
-  vertex(0, tabSin[initH]*radius);
-  for (i = initH; (i < NB_POINTS-1) && (i < degre); i++) {
-    vertex(tabCos[i]*radius,tabSin[i]*radius);
-  }
-  last = max(0, i-1);
-  vertex(0, tabSin[last]*radius);
-  endShape();
-  
-  beginShape();
-  vertex(0, tabSin[initH]*radius);
-  for (i = initH; (i < NB_POINTS-1) && (i < degre); i++) {
-    vertex(-tabCos[i]*radius,tabSin[i]*radius);
-  }
-  vertex(0, tabSin[last]*radius);
-  endShape(); 
 }
