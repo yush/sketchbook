@@ -6,6 +6,7 @@ final int NB_POINTS = 180;
 int R;
 int levelBefore, levelAfter;
 final float R_MAX = 100;
+final int L_MAX = 100;
 SuSlider slLevelBefore;
 SuSlider slLevelAfter;
 SuSlider slRayon;
@@ -33,27 +34,26 @@ void setup ()
 void initGui() {     
   slLevelBefore = new SuSlider(2, 2, width/2, 16);
   slLevelBefore.setCaption("niveau initial");
-  slLevelBefore.setRange(0, 180);
+  slLevelBefore.setRange(0, R_MAX);
   slLevelBefore.value = 0;        
 
   slLevelAfter = new SuSlider(2, 20, width/2, 16);
   slLevelAfter.setCaption("niveau final");
-  slLevelAfter.setRange(0, 180);
+  slLevelAfter.setRange(0, R_MAX);
   slLevelAfter.value = 0;     
 
   slRayon = new SuSlider(2, 40, width/2, 16).setCaption("rayon")
                                               .setRange(50, R_MAX);                                      
   slLg = new SuSlider(2, 60, width/2, 16).setCaption("longeur")
-                                              .setRange(200, R_MAX);                                      
+                                              .setRange(100, 300);                                      
+  slLg.value = 200;
 
-  stSurface = new SuText(2, 80);
-  stSurface.setCaption("surface");
   slRayon.value = 100;
-  stNiveau = new SuText(2, 80);
+  stNiveau = new SuText(2, 100);
   stNiveau.setCaption("hauteur");
-  stSurface = new SuText(2, 100);
+  stSurface = new SuText(2, 120);
   stSurface.setCaption("surface");
-  stLg = new SuText(2, 60);
+  stLg = new SuText(2, 80);
   stLg.setCaption("longueur");
 }
 
@@ -65,34 +65,19 @@ void draw ()
   rotateX(mouseY*0.01);
   rotateY(mouseX*0.01);
   background(100);   
-  levelBefore = round(slLevelBefore.value);
-  levelAfter = round(slLevelAfter.value);
+  levelBefore = round(slLevelBefore.value/L_MAX*NB_POINTS);
+  levelAfter = round(slLevelAfter.value/L_MAX*NB_POINTS);
   R = round(slRayon.value);
-  stNiveau.value = calculeNiveau(R, levelBefore);
-  stSurface.value = calculeAireDisqueOuvert(R, levelBefore);
+  s1.l = round(slLg.value);
+  s2.l = round(slLg.value);
+  stLg.value = s1.l;
   s1.processShape(R, 0, levelBefore);
   s2.processShape(R, levelBefore, levelAfter);
+  stNiveau.value = round(s1.calculeNiveau());
+  //stSurface.value = s1.calculeAireDisqueOuvert();
   s1.draw3d();
   s2.draw3d();
   popMatrix();
 }
 
-float calculeNiveau(float radius, int degre) {
-  float h;
-  h = map(tabSin[degre], -1, 1, 0, radius*2);
-  return round(h);
-}
 
-float calculeAireSegmentCirculaire(float radius, int degre) {
-  float A, theta;
-  theta = map((180-degre)*2, 0, 360, 0, 2*PI); 
-  A = ((radius*radius)/2)*(theta- sin(theta));  
-  return A;
-}
-
-float calculeAireDisqueOuvert(float radius, int degre) {
-  float S, C;
-  S = calculeAireSegmentCirculaire(radius, degre);
-  C = PI*radius*radius;
-  return C-S; 
-}

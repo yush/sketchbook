@@ -1,7 +1,7 @@
 public class SegCirc {
   color c;
   float radius;
-  int initH, degre;
+  int initH, degre, l;
   ArrayList<PVector> p;
   float[] tabCos = new float[NB_POINTS];
   float[] tabSin = new float[NB_POINTS];
@@ -10,6 +10,7 @@ public class SegCirc {
     radius = -1;
     initH = -1;
     degre = -1;
+    l = -1;
     p = new ArrayList<PVector>(); 
     for (int i = 0; i < NB_POINTS; i++) {
       tabCos[i] = cos(map(i, 0, NB_POINTS, -PI/2, PI/2));
@@ -53,7 +54,6 @@ public class SegCirc {
   
   void draw3d() {
     PVector v1;
-    int l = 100;
     fill(c);
     translate(0, 0, l/2);
     this.draw();
@@ -67,5 +67,25 @@ public class SegCirc {
       vertex(v1.x,v1.y, -l/2);
     }
     endShape(); 
+  }
+
+  float calculeNiveau() {
+    float h;
+    h = map(tabSin[degre], -1, 1, 0, radius*2);
+    return round(h);
+  }
+
+  float calculeAireSegmentCirculaire() {
+    float A, theta;
+    theta = map((180-degre)*2, 0, 360, 0, 2*PI); 
+    A = ((radius*radius)/2)*(theta- sin(theta));  
+    return A;
+  }
+
+  float calculeAireDisqueOuvert() {
+    float S, C;
+    S = this.calculeAireSegmentCirculaire();
+    C = PI*radius*radius;
+    return C-S; 
   }
 }
